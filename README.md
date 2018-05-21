@@ -9,11 +9,11 @@
  * Supports also standard C/C++ printf() function
  * Added printf(x,y,...) to print directly at x,y coordinate with one call
  * TTY mode:
- 	* Let You user the display like a terminal window (without positioning the cursor before print).
+ 	* Display can be used like a terminal window (without positioning the cursor before print).
  	* Afetr call to println(), writeln() or putting '\n' or '\r' in printf(), print(), write(), so, each
  	  time that a '\r' or '\n' are processed the cursor position is moved to the beginning to the next line.
  	* Any call to setCursor() has no effect
- 	*
+ 	* When the cursor position reach the bottom of the screen, the page is scrolled up by one line.
  
 ### Limitations:
 
