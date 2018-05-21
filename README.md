@@ -1,7 +1,15 @@
 # Driver for OLED displays with SSD1306 or SH1106
 
+
 ***
+This driver is distributed without license. You may use it for free.
+Author: Stefan Frings, 2017
+
+Update by:
+Author: Fabio Durigon, 2018
+email: develop@dury.it
 ***
+
 #### Futures:
  * Supported display sizes: 196x16, 28x32 and 128x64 pixels.
  * The I2C communication is done by software bit-banging the configurable I/O pins.
