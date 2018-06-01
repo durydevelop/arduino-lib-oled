@@ -36,20 +36,20 @@ email: develop@dury.it
 The class constructor declaration is:
 
 ```C++
-	OLED(	uint8_t sda_pin,					// sda pin for I2C comunication
-			uint8_t scl_pin,					// scl pin for I2C comunication
-			uint8_t reset_pin=NO_RESET_PIN,	// Reset pin (default: none)
-			uint8_t i2c_address=0x3C,		// I2C address (default: 0x3C)
-        	uint_fast8_t width=128,			// Pixel width
-        	uint_fast8_t height=32,			// Pixel Height
-        	bool isSH1106=false				// Display type: true for SSD1306, false for SH1106 (default: false)  
-       );
+OLED(	uint8_t sda_pin,			// sda pin for I2C comunication
+	uint8_t scl_pin,			// scl pin for I2C comunication
+	uint8_t reset_pin=NO_RESET_PIN,		// Reset pin (default: none)
+	uint8_t i2c_address=0x3C,		// I2C address (default: 0x3C)
+	uint_fast8_t width=128,			// Pixel width
+	uint_fast8_t height=32,			// Pixel Height
+	bool isSH1106=false			// Display type: true for SSD1306, false for SH1106 (default: false)  
+);
 ```
        
 so, minimal class declarations can be:
 
 ```C++
-	OLED Display=OLED(4,5,16);
+OLED Display=OLED(4,5,16);
 ```
 	
 that's same of:
@@ -63,24 +63,24 @@ That's for OLED display mounted directly on NodeMCU WiFi_KIT_8 model from Heltec
 ### Initilize display lib like Serial artuino lib:
 
 ```C++
-	display.begin();
+display.begin();
 ```
 
 ### Write a string:
 
 ```C++
-	/* Method 1 */
-	display.draw_string(0,0,"Hello World");
-	
-	/* Method 2 */
-	display.setCursor(0,0);
-	display.print("Hello World");
-	
-	/* Method 3 */
-	display.printf(0,0,"Hello World");
-	
-	/* Method 4 */
-	display.setCursor(0,0);
-	display.printf("Hello World");
+/* Method 1 */
+display.draw_string(0,0,"Hello World");
+
+/* Method 2 */
+display.setCursor(0,0);
+display.print("Hello World");
+
+/* Method 3 */
+display.printf(0,0,"Hello World");
+
+/* Method 4 */
+display.setCursor(0,0);
+display.printf("Hello World");
 ```
 
