@@ -1,0 +1,45 @@
+#######################################
+# Syntax Coloring Map OLED
+#######################################
+
+#######################################
+# Class (KEYWORD1)
+#######################################
+
+OLED	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+begin	KEYWORD2
+set_power	KEYWORD2
+set_invert	KEYWORD2
+set_contrast	KEYWORD2
+set_scrolling	KEYWORD2
+scroll_up	KEYWORD2
+display	KEYWORD2
+clear	KEYWORD2
+draw_bitmap	KEYWORD2
+draw_bitmap_P	KEYWORD2
+draw_character	KEYWORD2
+draw_string	KEYWORD2
+draw_string_P	KEYWORD2
+draw_pixel	KEYWORD2
+draw_line	KEYWORD2
+draw_circle	KEYWORD2
+draw_rectangle	KEYWORD2
+setTTYMode	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+sda_pin	LITERAL1
+scl_pin	LITERAL1
+reset_pin	LITERAL1
+width	LITERAL1
+height	LITERAL1
+i2c_address	LITERAL1
+isSH1106	LITERAL1
+pages	LITERAL1
+pages	LITERAL1
+
