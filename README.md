@@ -60,7 +60,7 @@ OLED Display=OLED(4,5,16,0x3C,128,32,false);
 
 That's for OLED display mounted directly on NodeMCU WiFi_KIT_8 model from Heltec (http://www.heltec.cn/project/wifi-kit-8/?lang=en) 
 
-### Initilize display lib like Serial artuino lib:
+### Initialize display lib like Serial artuino lib:
 
 ```C++
 display.begin();
