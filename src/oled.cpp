@@ -1,112 +1,22 @@
 #include <Arduino.h>
 #include "oled.h"
 
-static const uint8_t oled_font6x8 [] PROGMEM = {
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // sp
-    0x00, 0x00, 0x00, 0x2f, 0x00, 0x00, // !
-    0x00, 0x00, 0x07, 0x00, 0x07, 0x00, // "
-    0x00, 0x14, 0x7f, 0x14, 0x7f, 0x14, // #
-    0x00, 0x24, 0x2a, 0x7f, 0x2a, 0x12, // $
-    0x00, 0x62, 0x64, 0x08, 0x13, 0x23, // %
-    0x00, 0x36, 0x49, 0x55, 0x22, 0x50, // &
-    0x00, 0x00, 0x05, 0x03, 0x00, 0x00, // '
-    0x00, 0x00, 0x1c, 0x22, 0x41, 0x00, // (
-    0x00, 0x00, 0x41, 0x22, 0x1c, 0x00, // )
-    0x00, 0x14, 0x08, 0x3E, 0x08, 0x14, // *
-    0x00, 0x08, 0x08, 0x3E, 0x08, 0x08, // +
-    0x00, 0x00, 0x00, 0xA0, 0x60, 0x00, // ,
-    0x00, 0x08, 0x08, 0x08, 0x08, 0x08, // -
-    0x00, 0x00, 0x60, 0x60, 0x00, 0x00, // .
-    0x00, 0x20, 0x10, 0x08, 0x04, 0x02, // /
-    0x00, 0x3E, 0x51, 0x49, 0x45, 0x3E, // 0
-    0x00, 0x00, 0x42, 0x7F, 0x40, 0x00, // 1
-    0x00, 0x42, 0x61, 0x51, 0x49, 0x46, // 2
-    0x00, 0x21, 0x41, 0x45, 0x4B, 0x31, // 3
-    0x00, 0x18, 0x14, 0x12, 0x7F, 0x10, // 4
-    0x00, 0x27, 0x45, 0x45, 0x45, 0x39, // 5
-    0x00, 0x3C, 0x4A, 0x49, 0x49, 0x30, // 6
-    0x00, 0x01, 0x71, 0x09, 0x05, 0x03, // 7
-    0x00, 0x36, 0x49, 0x49, 0x49, 0x36, // 8
-    0x00, 0x06, 0x49, 0x49, 0x29, 0x1E, // 9
-    0x00, 0x00, 0x36, 0x36, 0x00, 0x00, // :
-    0x00, 0x00, 0x56, 0x36, 0x00, 0x00, // ;
-    0x00, 0x08, 0x14, 0x22, 0x41, 0x00, // <
-    0x00, 0x14, 0x14, 0x14, 0x14, 0x14, // =
-    0x00, 0x00, 0x41, 0x22, 0x14, 0x08, // >
-    0x00, 0x02, 0x01, 0x51, 0x09, 0x06, // ?
-    0x00, 0x32, 0x49, 0x59, 0x51, 0x3E, // @
-    0x00, 0x7C, 0x12, 0x11, 0x12, 0x7C, // A
-    0x00, 0x7F, 0x49, 0x49, 0x49, 0x36, // B
-    0x00, 0x3E, 0x41, 0x41, 0x41, 0x22, // C
-    0x00, 0x7F, 0x41, 0x41, 0x22, 0x1C, // D
-    0x00, 0x7F, 0x49, 0x49, 0x49, 0x41, // E
-    0x00, 0x7F, 0x09, 0x09, 0x09, 0x01, // F
-    0x00, 0x3E, 0x41, 0x49, 0x49, 0x7A, // G
-    0x00, 0x7F, 0x08, 0x08, 0x08, 0x7F, // H
-    0x00, 0x00, 0x41, 0x7F, 0x41, 0x00, // I
-    0x00, 0x20, 0x40, 0x41, 0x3F, 0x01, // J
-    0x00, 0x7F, 0x08, 0x14, 0x22, 0x41, // K
-    0x00, 0x7F, 0x40, 0x40, 0x40, 0x40, // L
-    0x00, 0x7F, 0x02, 0x0C, 0x02, 0x7F, // M
-    0x00, 0x7F, 0x04, 0x08, 0x10, 0x7F, // N
-    0x00, 0x3E, 0x41, 0x41, 0x41, 0x3E, // O
-    0x00, 0x7F, 0x09, 0x09, 0x09, 0x06, // P
-    0x00, 0x3E, 0x41, 0x51, 0x21, 0x5E, // Q
-    0x00, 0x7F, 0x09, 0x19, 0x29, 0x46, // R
-    0x00, 0x46, 0x49, 0x49, 0x49, 0x31, // S
-    0x00, 0x01, 0x01, 0x7F, 0x01, 0x01, // T
-    0x00, 0x3F, 0x40, 0x40, 0x40, 0x3F, // U
-    0x00, 0x1F, 0x20, 0x40, 0x20, 0x1F, // V
-    0x00, 0x3F, 0x40, 0x38, 0x40, 0x3F, // W
-    0x00, 0x63, 0x14, 0x08, 0x14, 0x63, // X
-    0x00, 0x07, 0x08, 0x70, 0x08, 0x07, // Y
-    0x00, 0x61, 0x51, 0x49, 0x45, 0x43, // Z
-    0x00, 0x00, 0x7F, 0x41, 0x41, 0x00, // [
-    0x00, 0x55, 0x2A, 0x55, 0x2A, 0x55, // backslash
-    0x00, 0x00, 0x41, 0x41, 0x7F, 0x00, // ]
-    0x00, 0x04, 0x02, 0x01, 0x02, 0x04, // ^
-    0x00, 0x40, 0x40, 0x40, 0x40, 0x40, // _
-    0x00, 0x00, 0x01, 0x02, 0x04, 0x00, // '
-    0x00, 0x20, 0x54, 0x54, 0x54, 0x78, // a
-    0x00, 0x7F, 0x48, 0x44, 0x44, 0x38, // b
-    0x00, 0x38, 0x44, 0x44, 0x44, 0x20, // c
-    0x00, 0x38, 0x44, 0x44, 0x48, 0x7F, // d
-    0x00, 0x38, 0x54, 0x54, 0x54, 0x18, // e
-    0x00, 0x08, 0x7E, 0x09, 0x01, 0x02, // f
-    0x00, 0x18, 0xA4, 0xA4, 0xA4, 0x7C, // g
-    0x00, 0x7F, 0x08, 0x04, 0x04, 0x78, // h
-    0x00, 0x00, 0x44, 0x7D, 0x40, 0x00, // i
-    0x00, 0x40, 0x80, 0x84, 0x7D, 0x00, // j
-    0x00, 0x7F, 0x10, 0x28, 0x44, 0x00, // k
-    0x00, 0x00, 0x41, 0x7F, 0x40, 0x00, // l
-    0x00, 0x7C, 0x04, 0x18, 0x04, 0x78, // m
-    0x00, 0x7C, 0x08, 0x04, 0x04, 0x78, // n
-    0x00, 0x38, 0x44, 0x44, 0x44, 0x38, // o
-    0x00, 0xFC, 0x24, 0x24, 0x24, 0x18, // p
-    0x00, 0x18, 0x24, 0x24, 0x18, 0xFC, // q
-    0x00, 0x7C, 0x08, 0x04, 0x04, 0x08, // r
-    0x00, 0x48, 0x54, 0x54, 0x54, 0x20, // s
-    0x00, 0x04, 0x3F, 0x44, 0x40, 0x20, // t
-    0x00, 0x3C, 0x40, 0x40, 0x20, 0x7C, // u
-    0x00, 0x1C, 0x20, 0x40, 0x20, 0x1C, // v
-    0x00, 0x3C, 0x40, 0x30, 0x40, 0x3C, // w
-    0x00, 0x44, 0x28, 0x10, 0x28, 0x44, // x
-    0x00, 0x1C, 0xA0, 0xA0, 0xA0, 0x7C, // y
-    0x00, 0x44, 0x64, 0x54, 0x4C, 0x44, // z
-    0x00, 0x00, 0x08, 0x77, 0x41, 0x00, // {
-    0x00, 0x00, 0x00, 0x63, 0x00, 0x00, // ¦
-    0x00, 0x00, 0x41, 0x77, 0x08, 0x00, // }
-    0x00, 0x08, 0x04, 0x08, 0x08, 0x04, // ~
-    0x00, 0x3D, 0x40, 0x40, 0x20, 0x7D, // ü
-    0x00, 0x3D, 0x40, 0x40, 0x40, 0x3D, // Ü
-    0x00, 0x21, 0x54, 0x54, 0x54, 0x79, // ä
-    0x00, 0x7D, 0x12, 0x11, 0x12, 0x7D, // Ä
-    0x00, 0x39, 0x44, 0x44, 0x44, 0x39, // ö
-    0x00, 0x3D, 0x42, 0x42, 0x42, 0x3D, // Ö
-    0x00, 0x02, 0x05, 0x02, 0x00, 0x00, // °
-    0x00, 0x7E, 0x01, 0x49, 0x55, 0x73, // ß
-};
+/**
+ * \example WIFI-Kit-8-DEMO.ino
+ * \example WIFI-Kit-8-TTY-DEMO.ino
+ * \example WIFI-Kit-8-WiFiScan.ino
+ */
 
+/**
+* Constructor of the OLED class.
+* @param sda_pin Pin number of the SDA line (can be any Arduino I/O pin)
+* @param sda_pin Pin number of the SCL line (can be any Arduino I/O pin)
+* @param reset_pin Pin number for the /RST line, or use NO_RESET_PIN if the reset signal is generated somewhere else
+* @param i2c_address The I²C address is usually 0x3c or 0x3D
+* @param width With of the display in pixels: 96 or 128
+* @param height Height of the display in pixels: 16, 32 or 64
+* @param isSH1106 Must be true=SH1106 chip, false=SSD1306 chip
+*/
 OLED::OLED(uint8_t sda_pin, uint8_t scl_pin, uint8_t reset_pin, uint8_t i2c_address, uint_fast8_t width, uint_fast8_t height, bool isSH1106)
 : sda_pin(sda_pin),
 scl_pin(scl_pin),
@@ -119,98 +29,25 @@ pages((height + 7) / 8),
 bufsize(static_cast<uint_least16_t> (pages*width))
 {
     this->buffer = (uint8_t *) malloc(bufsize); // two dimensional array of n pages each of n columns.
+    // Set dafault
     X=0;
     Y=0;
     ttyMode=OLED_DEFAULT_TTY_MODE;
+    fontSize=FONT_SIZE_NORMAL;
+    pixelColor=PIXEL_COLOR_WHITE;
 }
 
+/**
+* Frees the buffer memory and leaves the display in the previous state.
+*/
 OLED::~OLED()
 {
     free(buffer);
 }
 
-void OLED::i2c_start()
-{
-    while (!digitalRead(sda_pin) || !digitalRead(scl_pin));
-    digitalWrite(sda_pin, LOW);
-#if !defined OUTPUT_OPEN_DRAIN
-    pinMode(sda_pin, OUTPUT);
-#endif
-    OLED_I2C_DELAY;
-    digitalWrite(scl_pin, LOW);
-#if !defined OUTPUT_OPEN_DRAIN
-    pinMode(scl_pin, OUTPUT);
-#endif
-    OLED_I2C_DELAY;
-}
-
-void OLED::i2c_stop()
-{
-#if !defined OUTPUT_OPEN_DRAIN
-    pinMode(scl_pin, INPUT);
-#endif
-    digitalWrite(scl_pin, HIGH);
-    OLED_I2C_DELAY;
-#if !defined OUTPUT_OPEN_DRAIN
-    pinMode(sda_pin, INPUT);
-#endif
-    digitalWrite(sda_pin, HIGH);
-    OLED_I2C_DELAY;
-    while (!digitalRead(sda_pin) || !digitalRead(scl_pin));
-}
-
-bool OLED::i2c_send(uint8_t byte)
-{
-    for (int_fast8_t bit = 7; bit >= 0; bit--)
-    {
-        if (byte & 128)
-        {
-#if !defined OUTPUT_OPEN_DRAIN
-            pinMode(sda_pin, INPUT);
-#endif
-            digitalWrite(sda_pin, HIGH);
-        }
-        else
-        {
-            digitalWrite(sda_pin, LOW);
-#if !defined OUTPUT_OPEN_DRAIN
-            pinMode(sda_pin, OUTPUT);
-#endif
-        }
-        OLED_I2C_DELAY;
-#if !defined OUTPUT_OPEN_DRAIN
-        pinMode(scl_pin, INPUT);
-#endif
-        digitalWrite(scl_pin, HIGH);        
-        OLED_I2C_DELAY;
-        while (!digitalRead(scl_pin)); 
-        digitalWrite(scl_pin, LOW);
-#if !defined OUTPUT_OPEN_DRAIN
-        pinMode(scl_pin, OUTPUT);
-#endif
-        OLED_I2C_DELAY;
-        byte = byte << 1;
-    }
-    // Receive ACK
-#if !defined OUTPUT_OPEN_DRAIN
-    pinMode(sda_pin, INPUT);
-#endif
-    digitalWrite(sda_pin, HIGH);
-#if !defined OUTPUT_OPEN_DRAIN
-    pinMode(scl_pin, INPUT);
-#endif
-    digitalWrite(scl_pin, HIGH);    
-    OLED_I2C_DELAY;
-    while (!digitalRead(scl_pin)); 
-    bool ack = digitalRead(sda_pin) == 0;    
-    digitalWrite(scl_pin, LOW);
-#if !defined OUTPUT_OPEN_DRAIN
-    pinMode(scl_pin, OUTPUT);
-#endif
-    OLED_I2C_DELAY;
-    return ack;
-}
-
+/**
+*  Initialize the display controller, clean memory and switch output on.
+*/
 void OLED::begin()
 {
 #if defined OUTPUT_OPEN_DRAIN
@@ -282,6 +119,10 @@ void OLED::begin()
     set_power(true);
 }
 
+/**
+* This command is executed by the display controller itself, hence it does not affect the buffer memory.
+* @param enable Whether to enable the display output.
+*/
 void OLED::set_power(bool enable)
 {
     i2c_start();
@@ -302,6 +143,12 @@ void OLED::set_power(bool enable)
     i2c_stop();
 }
 
+/**
+* If enabled, then WHITE and BLACK are swapped.
+* This command is executed by the display controller itself, so it works very fast and does not affect
+* the buffer memory.
+* @param enable Whether to enable inverse output
+*/
 void OLED::set_invert(bool enable)
 {
     i2c_start();
@@ -318,6 +165,31 @@ void OLED::set_invert(bool enable)
     i2c_stop();
 }
 
+/**
+* The value affects the electrical current throught the OLED segments in linear ratio.
+* But the eye reacts logarithmically. A medium brightnes of 128 looks almost as bright as the
+* maximum setting but increases the lifetime of the display a lot.
+* @param contrast Contrast value, default is 0x80.
+**/
+void OLED::set_contrast(uint8_t contrast)
+{
+    i2c_start();
+    i2c_send(i2c_address << 1); // address + write
+    i2c_send(0x00); // command
+    i2c_send(0x81); // deativate scrol
+    i2c_send(contrast);
+    i2c_stop();
+}
+
+/**
+* This is performed by the display controller itself without needing continuous
+* communication and it does not affect the buffer memory.
+* For horizontal scrolling, you can decide whether the whole display or only a part of it shall scroll.
+* In case of diagonal scrolling, the vertical part affects always the whole display.
+* @param scroll_type Select the scroll effect, or NO_SCROLLING to disable it
+* @param first_page Defined which pages are affected by the horizontal scrolling (0-7). Each page contains 8 lines
+* @param last_page Defined which pages are affected by the horizontal scrolling (0-7). Each page contains 8 lines
+**/
 void OLED::set_scrolling(tScrollEffect scroll_type, uint_fast8_t first_page, uint_fast8_t last_page)
 {
     i2c_start();
@@ -351,30 +223,98 @@ void OLED::set_scrolling(tScrollEffect scroll_type, uint_fast8_t first_page, uin
     i2c_stop();
 }
 
-void OLED::set_contrast(uint8_t contrast)
+/**
+     * Scroll the display up, which leaves a number of black pixel lines at the bottom.
+     * An optional delay time can be used to produce a smooth scrolling effect.
+     * This is done by software, requiring continuous communication.
+     * @param num_lines Number of pixel lines to scroll the display content up.
+     * @param delay_ms Delay time between each step, recommended values are either 0 or 20..60.
+     */
+void OLED::scroll_up(uint_fast8_t num_lines, uint_fast8_t delay_ms)
 {
-    i2c_start();
-    i2c_send(i2c_address << 1); // address + write
-    i2c_send(0x00); // command
-    i2c_send(0x81); // deativate scrol
-    i2c_send(contrast); 
-    i2c_stop();
+    if (delay_ms == 0)
+    {
+        // Scroll full pages, fast algorithm
+        uint_fast8_t scroll_pages = num_lines / 8;
+        for (uint_fast8_t i = 0; i < pages; i++)
+        {
+            for (uint_fast8_t x = 0; x < width; x++)
+            {
+                uint16_t index = i * width + x;
+                uint16_t index2 = (i + scroll_pages) * width + x;
+                if (index2 < bufsize)
+                {
+                    buffer[index] = buffer[index2];
+                }
+                else
+                {
+                    buffer[index] = 0;
+                }
+            }
+        }
+        num_lines -= scroll_pages * 8;
+    }
+
+    // Scroll the remainder line by line
+    bool need_refresh=true;
+    if (num_lines > 0)
+    {
+        uint16_t start=millis() & 0xFFFF;
+        uint16_t target_time=0;
+
+        for (uint_fast8_t i = 0; i < num_lines; i++)
+        {
+
+            // Scroll everything 1 line up
+            for (uint_fast8_t j = 0; j < pages; j++)
+            {
+                uint16_t index = j*width;
+                uint16_t index2 = index + width;
+                for (uint_fast8_t x = 0; x < width; x++)
+                {
+                    uint_fast8_t carry = 0;
+                    if (index2 < bufsize)
+                    {
+                        if (buffer[index2] & 1)
+                        {
+                            carry = 128;
+                        }
+                    }
+                    buffer[index] = (buffer[index] >> 1) | carry;
+                    index++;
+                    index2++;
+                }
+            }
+            need_refresh=true;
+            target_time+=delay_ms;
+
+            // Refresh the display only if we have some time
+            uint16_t now=millis() & 0xFFFF;
+            if (now-start < target_time)
+            {
+                display();
+                need_refresh=false;
+            }
+
+            // If we have still more time, then yield a while
+            while((millis() & 0xFFFF)-start < target_time)
+            {
+                yield();
+            }
+        }
+    }
+
+    if (need_refresh)
+    {
+        display();
+    }
 }
 
-void OLED::clear(tColor color)
-{
-    if (color == WHITE)
-    {
-        memset(buffer, 0xFF, bufsize);
-    }
-    else
-    {
-        memset(buffer, 0x00, bufsize);
-    }
-    X=0;
-    Y=0;
-}
-
+/**
+* Transfer the buffer memory data to the display controller.
+* You have to call this method after any drawing action into the buffer to make the change visible.
+* A call to this method takes several milliseconds.
+*/
 void OLED::display()
 {
     uint16_t index = 0;
@@ -412,110 +352,71 @@ void OLED::display()
     }
 }
 
-void OLED::draw_byte(uint_fast8_t x, uint_fast8_t y, uint8_t b, tColor color)
+/**
+* Fill the whole buffer memory with current color
+*/
+void OLED::clear(void)
 {
-    // Invalid position
-    if (x >= width || y >= height)
+    if (pixelColor == PIXEL_COLOR_WHITE)
     {
-        return;
-    }
-
-    uint_fast16_t buffer_index = y / 8 * width + x;
-
-    if (color == WHITE)
-    {
-        // If the y position matches a page, then it goes quicker
-        if (y % 8 == 0)
-        {
-            if (buffer_index < bufsize)
-            {
-                buffer[buffer_index] |= b;
-            }
-        }
-        else
-        {
-            uint16_t w = (uint16_t) b << (y % 8);
-            if (buffer_index < bufsize)
-            {
-                buffer[buffer_index] |= (w & 0xFF);
-            }
-            uint16_t buffer_index2 = buffer_index + width;
-            if (buffer_index2 < bufsize)
-            {
-                buffer[buffer_index2] |= (w >> 8);
-            }
-        }
+        memset(buffer, 0xFF, bufsize);
     }
     else
     {
-        // If the y position matches a page, then it goes quicker
-        if (y % 8 == 0)
-        {
-            if (buffer_index < bufsize)
-            {
-                buffer[buffer_index] &= ~b;
-            }
-        }
-        else
-        {
-            uint16_t w = (uint16_t) b << (y % 8);
-            if (buffer_index < bufsize)
-            {
-                buffer[buffer_index] &= ~(w & 0xFF);
-            }
-            uint16_t buffer_index2 = buffer_index + width;
-            if (buffer_index2 < bufsize)
-            {
-                buffer[buffer_index2] &= ~(w >> 8);
-            }
-        }
+        memset(buffer, 0x00, bufsize);
     }
-    return;
+    X=0;
+    Y=0;
 }
 
-void OLED::draw_bytes(uint_fast8_t x, uint_fast8_t y, const uint8_t* data, uint_fast8_t size, tSize scaling, tColor color, bool useProgmem)
+/**
+* Draw a bitmap from RAM. The raw data format is explained in the description of this class.
+* @param x Pixel position of the upper left corner
+* @param y Pixel position of the upper left corner
+* @param width Width of the bitmap in pixels
+* @param height Height of the bitmap in pixels. Must be a multiple of 8
+* @param data Raw data, number of bytes must be width*height/8
+* @param color Color to draw with
+*/
+void OLED::draw_bitmap(uint_fast8_t x, uint_fast8_t y, uint_fast8_t bitmap_width, uint_fast8_t bitmap_height, const uint8_t* data)
 {
-    for (uint_fast8_t column = 0; column < size; column++)
+    uint_fast8_t num_pages = (bitmap_height + 7) / 8;
+    for (uint_fast8_t page = 0; page < num_pages; page++)
     {
-        uint8_t b;
-        if (useProgmem)
-        {
-            b = pgm_read_byte(data);
-        }
-        else
-        {
-            b = *data;
-        }
-        data++;
-        if (scaling == DOUBLE_SIZE)
-        {
-            // Stretch vertically
-            uint16_t w = 0;
-            for (uint_fast8_t bit = 0; bit < 7; bit++)
-            {
-                if (b & (1 << bit))
-                {
-                    uint_fast8_t pos = bit << 1;
-                    w |= ((1 << pos) | (1 << (pos + 1)));
-                }
-            }
-
-            // Output 2 times to strech hozizontally            
-            draw_byte(x, y, w & 0xFF, color);
-            draw_byte(x, y + 8, (w >> 8), color);
-            x++;
-            draw_byte(x, y, w & 0xFF, color);
-            draw_byte(x, y + 8, (w >> 8), color);
-            x++;
-        }
-        else // NORMAL_SIZE
-        {
-            draw_byte(x++, y, b, color);
-        }
+        draw_bytes(x, y, data, bitmap_width,false);
+        data += bitmap_width;
+        y += 8;
     }
 }
 
-size_t OLED::draw_character(uint_fast8_t x, uint_fast8_t y, char c, tSize scaling, tColor color)
+/**
+* Draw a bitmap from program memory (aka FLASH). The raw data format is explained in the description of this class.
+* @param x Pixel position of the upper left corner
+* @param y Pixel position of the upper left corner
+* @param width Width of the bitmap in pixels
+* @param height Height of the bitmap in pixels. Must be a multiple of 8
+* @param data Raw data, number of bytes must be width*height/8
+* @param color Color to draw with
+*/
+void OLED::draw_bitmap_P(uint_fast8_t x, uint_fast8_t y, uint_fast8_t bitmap_width, uint_fast8_t bitmap_height, const uint8_t* data)
+{
+    uint_fast8_t num_pages = (bitmap_height + 7) / 8;
+    for (uint_fast8_t page = 0; page < num_pages; page++)
+    {
+        draw_bytes(x,y,data,bitmap_width,true);
+        data += bitmap_width;
+        y += 8;
+    }
+}
+
+/**
+* Draw a character.
+* @param x Pixel position of the upper left corner
+* @param y Pixel position of the upper left corner
+* @param c The character code. Supports US-ASCII characters and german umlauts. See source code of oled.cpp
+* @param color Color to draw with
+*/
+size_t OLED::draw_character(uint_fast8_t x, uint_fast8_t y, char c)
 {
     // Invalid position
     if (x >= width || y >= height || c < 32)
@@ -560,16 +461,23 @@ size_t OLED::draw_character(uint_fast8_t x, uint_fast8_t y, char c, tSize scalin
         return 0;
     }
 
-    draw_bytes(x, y, &oled_font6x8[font_index], 6, scaling, color, true);
+    draw_bytes(x, y, &oled_font6x8[font_index],6,true);
     return 1;
 }
 
-void OLED::draw_string(uint_fast8_t x, uint_fast8_t y, const char* s, tSize scaling, tColor color)
+/**
+* Draw a C string from RAM, which is a NULL terminated array of characters.
+* @param x Pixel position of the upper left corner
+* @param y Pixel position of the upper left corner
+* @param s The string to draw. Supports US-ASCII characters and german umlauts. See source code of oled.cpp
+* @param color Color to draw with
+*/
+void OLED::draw_string(uint_fast8_t x, uint_fast8_t y, const char* s)
 {
     while (*s)
     {
-        draw_character(x, y, *s, scaling, color);
-        if (scaling == DOUBLE_SIZE)
+        draw_character(x,y,*s);
+        if (fontSize == FONT_SIZE_DOUBLE)
         {
             x += 12;
         }
@@ -581,13 +489,20 @@ void OLED::draw_string(uint_fast8_t x, uint_fast8_t y, const char* s, tSize scal
     }
 }
 
-void OLED::draw_string_P(uint_fast8_t x, uint_fast8_t y, const char* s, tSize scaling, tColor color)
+/**
+* Draw a C string from program memory (aka FLASH), which is a NULL terminated array of characters.
+* @param x Pixel position of the upper left corner
+* @param y Pixel position of the upper left corner
+* @param s The string to draw. Supports US-ASCII characters and german umlauts. See source code of oled.cpp
+* @param color Color to draw with
+*/
+void OLED::draw_string_P(uint_fast8_t x, uint_fast8_t y, const char* s)
 {
     char c;
     while ((c = pgm_read_byte(s)))
     {
-        draw_character(x, y, c, scaling, color);
-        if (scaling == DOUBLE_SIZE)
+        draw_character(x,y,c);
+        if (fontSize == FONT_SIZE_DOUBLE)
         {
             x += 12;
         }
@@ -599,35 +514,18 @@ void OLED::draw_string_P(uint_fast8_t x, uint_fast8_t y, const char* s, tSize sc
     }
 }
 
-void OLED::draw_bitmap(uint_fast8_t x, uint_fast8_t y, uint_fast8_t bitmap_width, uint_fast8_t bitmap_height, const uint8_t* data, tColor color)
-{
-    uint_fast8_t num_pages = (bitmap_height + 7) / 8;
-    for (uint_fast8_t page = 0; page < num_pages; page++)
-    {
-        draw_bytes(x, y, data, bitmap_width, NORMAL_SIZE, color, false);
-        data += bitmap_width;
-        y += 8;
-    }
-}
-
-void OLED::draw_bitmap_P(uint_fast8_t x, uint_fast8_t y, uint_fast8_t bitmap_width, uint_fast8_t bitmap_height, const uint8_t* data, tColor color)
-{
-    uint_fast8_t num_pages = (bitmap_height + 7) / 8;
-    for (uint_fast8_t page = 0; page < num_pages; page++)
-    {
-        draw_bytes(x, y, data, bitmap_width, NORMAL_SIZE, color, true);
-        data += bitmap_width;
-        y += 8;
-    }
-}
-
-void OLED::draw_pixel(uint_fast8_t x, uint_fast8_t y, tColor color)
+/**
+* Draw a single pixel.
+* @param x,y Position of the pixel
+* @param color Color to draw with
+*/
+void OLED::draw_pixel(uint_fast8_t x, uint_fast8_t y)
 {
     if (x >= width || y >= height)
     {
         return;
     }
-    if (color == WHITE)
+    if (pixelColor == PIXEL_COLOR_WHITE)
     {
         buffer[x + (y / 8) * width] |= (1 << (y & 7)); // set bit 
     }
@@ -637,7 +535,13 @@ void OLED::draw_pixel(uint_fast8_t x, uint_fast8_t y, tColor color)
     }
 }
 
-void OLED::draw_line(uint_fast8_t x0, uint_fast8_t y0, uint_fast8_t x1, uint_fast8_t y1, tColor color)
+/**
+* Draw a line.
+* @param x0,y0 Start point of the line
+* @param x1,y1 End point of the line
+* @param color Color to draw with
+*/
+void OLED::draw_line(uint_fast8_t x0, uint_fast8_t y0, uint_fast8_t x1, uint_fast8_t y1)
 {        
     // Algorithm copied from Wikipedia
     int_fast16_t dx = abs(static_cast<int_fast16_t>(x1) - static_cast<int_fast16_t>(x0));
@@ -649,7 +553,7 @@ void OLED::draw_line(uint_fast8_t x0, uint_fast8_t y0, uint_fast8_t x1, uint_fas
 
     while (1)
     {
-        draw_pixel(x0, y0, color);
+        draw_pixel(x0, y0);
         if (x0 == x1 && y0 == y1)
         {
             break;
@@ -668,7 +572,14 @@ void OLED::draw_line(uint_fast8_t x0, uint_fast8_t y0, uint_fast8_t x1, uint_fas
     }
 }
 
-void OLED::draw_circle(uint_fast8_t x0, uint_fast8_t y0, uint_fast8_t radius, tFillmode fillMode, tColor color)
+/**
+* Draw a circle.
+* @param x,y Center position of the circle
+* @param radius Radius of the circle
+* @param fillMode Whether the circle is filled with the color
+* @param color Color to draw with
+*/
+void OLED::draw_circle(uint_fast8_t x0, uint_fast8_t y0, uint_fast8_t radius, tFillmode fillMode)
 {
     // Algorithm copied from Wikipedia
     int_fast16_t f = 1 - radius;
@@ -679,16 +590,16 @@ void OLED::draw_circle(uint_fast8_t x0, uint_fast8_t y0, uint_fast8_t radius, tF
 
     if (fillMode == SOLID)
     {
-        draw_pixel(x0, y0 + radius, color);
-        draw_pixel(x0, y0 - radius, color);
-        draw_line(x0 - radius, y0, x0 + radius, y0, color);
+        draw_pixel(x0, y0 + radius);
+        draw_pixel(x0, y0 - radius);
+        draw_line(x0 - radius, y0, x0 + radius, y0);
     }
     else
     {
-        draw_pixel(x0, y0 + radius, color);
-        draw_pixel(x0, y0 - radius, color);
-        draw_pixel(x0 + radius, y0, color);
-        draw_pixel(x0 - radius, y0, color);
+        draw_pixel(x0, y0 + radius);
+        draw_pixel(x0, y0 - radius);
+        draw_pixel(x0 + radius, y0);
+        draw_pixel(x0 - radius, y0);
     }
 
     while (x < y)
@@ -705,26 +616,33 @@ void OLED::draw_circle(uint_fast8_t x0, uint_fast8_t y0, uint_fast8_t radius, tF
 
         if (fillMode == SOLID)
         {
-            draw_line(x0 - x, y0 + y, x0 + x, y0 + y, color);
-            draw_line(x0 - x, y0 - y, x0 + x, y0 - y, color);
-            draw_line(x0 - y, y0 + x, x0 + y, y0 + x, color);
-            draw_line(x0 - y, y0 - x, x0 + y, y0 - x, color);
+            draw_line(x0 - x, y0 + y, x0 + x, y0 + y);
+            draw_line(x0 - x, y0 - y, x0 + x, y0 - y);
+            draw_line(x0 - y, y0 + x, x0 + y, y0 + x);
+            draw_line(x0 - y, y0 - x, x0 + y, y0 - x);
         }
         else
         {
-            draw_pixel(x0 + x, y0 + y, color);
-            draw_pixel(x0 - x, y0 + y, color);
-            draw_pixel(x0 + x, y0 - y, color);
-            draw_pixel(x0 - x, y0 - y, color);
-            draw_pixel(x0 + y, y0 + x, color);
-            draw_pixel(x0 - y, y0 + x, color);
-            draw_pixel(x0 + y, y0 - x, color);
-            draw_pixel(x0 - y, y0 - x, color);
+            draw_pixel(x0 + x, y0 + y);
+            draw_pixel(x0 - x, y0 + y);
+            draw_pixel(x0 + x, y0 - y);
+            draw_pixel(x0 - x, y0 - y);
+            draw_pixel(x0 + y, y0 + x);
+            draw_pixel(x0 - y, y0 + x);
+            draw_pixel(x0 + y, y0 - x);
+            draw_pixel(x0 - y, y0 - x);
         }
     }
 }
 
-void OLED::draw_rectangle(uint_fast8_t x0, uint_fast8_t y0, uint_fast8_t x1, uint_fast8_t y1, tFillmode fillMode, tColor color)
+/**
+* Draw a rectangle.
+* @param x0,y0 Upper left corner
+* @param x1,y1 Lower right corner
+* @param fillMode Whether the rectangle is filled with the color
+* @param color Color to draw with
+*/
+void OLED::draw_rectangle(uint_fast8_t x0, uint_fast8_t y0, uint_fast8_t x1, uint_fast8_t y1, tFillmode fillMode)
 {
     // Swap x0 and x1 if in wrong order
     if (x0 > x1)
@@ -744,187 +662,45 @@ void OLED::draw_rectangle(uint_fast8_t x0, uint_fast8_t y0, uint_fast8_t x1, uin
     {        
         for (uint_fast8_t y = y0; y <= y1; y++)
         {
-            draw_line(x0, y, x1, y, color);
+            draw_line(x0, y, x1, y);
         }
     }
     else
     {
-        draw_line(x0, y0, x1, y0, color);
-        draw_line(x0, y1, x1, y1, color);
-        draw_line(x0, y0, x0, y1, color);
-        draw_line(x1, y0, x1, y1, color);
+        draw_line(x0, y0, x1, y0);
+        draw_line(x0, y1, x1, y1);
+        draw_line(x0, y0, x0, y1);
+        draw_line(x1, y0, x1, y1);
     }
 }
 
-void OLED::scroll_up(uint_fast8_t num_lines, uint_fast8_t delay_ms)
-{
-    if (delay_ms == 0)
-    {
-        // Scroll full pages, fast algorithm
-        uint_fast8_t scroll_pages = num_lines / 8;
-        for (uint_fast8_t i = 0; i < pages; i++)
-        {
-            for (uint_fast8_t x = 0; x < width; x++)
-            {
-                uint16_t index = i * width + x;
-                uint16_t index2 = (i + scroll_pages) * width + x;
-                if (index2 < bufsize)
-                {
-                    buffer[index] = buffer[index2];
-                }
-                else
-                {
-                    buffer[index] = 0;
-                }
-            }
-        }
-        num_lines -= scroll_pages * 8;
-    }
-
-    // Scroll the remainder line by line 
-    bool need_refresh=true;
-    if (num_lines > 0)
-    {
-        uint16_t start=millis() & 0xFFFF;
-        uint16_t target_time=0;
-        
-        for (uint_fast8_t i = 0; i < num_lines; i++)
-        {
-
-            // Scroll everything 1 line up            
-            for (uint_fast8_t j = 0; j < pages; j++)
-            {
-                uint16_t index = j*width;
-                uint16_t index2 = index + width;
-                for (uint_fast8_t x = 0; x < width; x++)
-                {
-                    uint_fast8_t carry = 0;
-                    if (index2 < bufsize)
-                    {
-                        if (buffer[index2] & 1)
-                        {
-                            carry = 128;
-                        }
-                    }
-                    buffer[index] = (buffer[index] >> 1) | carry;
-                    index++;
-                    index2++;
-                }
-            }
-            need_refresh=true;
-            target_time+=delay_ms;
-            
-            // Refresh the display only if we have some time
-            uint16_t now=millis() & 0xFFFF;
-            if (now-start < target_time)
-            {
-                display();
-                need_refresh=false;
-            }
-                       
-            // If we have still more time, then yield a while
-            while((millis() & 0xFFFF)-start < target_time)
-            {
-                yield();
-            }
-        }
-    }
-    
-    if (need_refresh)
-    {
-        display();
-    }
-}
-
+/**
+* Write a character at current X,Y coordinates.
+* X coordinate will be moved by OLED_FONT_WIDTH value
+* * If the string contains a \r or \n and ttyMode is true, Y coordinate will be incremented
+* by OLED_FONT_HEIGHT value
+* This function overrides write(...) in Print.cpp of Arduino core
+*
+* @param c character to write
+* @return 1 on succeed, otherwise 0.
+*/
 size_t OLED::write(uint8_t c)
 {
 	int n=1;
-
-	/*
-	if (c == '\r' || c == '\n')
-	{
-		// Process CR and LF
-		Serial.println(c);
-		X=0;
-		Y+=(OLED_FONT_HEIGHT);
-		if (ttyMode) {
-			// Scroll up if cursor position is out of screen
-			if (Y >= height) {
-				scroll_up(OLED_FONT_HEIGHT);
-				Y=height-OLED_FONT_HEIGHT;
-			}
-		}
-	}
-	else
-	{
-	*/
-		n=draw_character(X,Y,c);
-		X+=OLED_FONT_WIDTH;
-		/*
-	}
-*/
+	n=draw_character(X,Y,c);
+	X+=OLED_FONT_WIDTH;
 	return n;
 }
 
-void OLED::setCursor(uint_fast8_t x, uint_fast8_t y)
-{
-	if (ttyMode) return; // in TTY mode position the cursor has no effect
-	X=x;
-	Y=y;
-}
-
-/*
-size_t OLED::printf(const char *format, ...) {
-    va_list arg;
-    va_start(arg, format);
-    char temp[64];
-    char* buffer = temp;
-    size_t len = vsnprintf(temp, sizeof(temp), format, arg);
-    va_end(arg);
-    if (len > sizeof(temp) - 1) {
-        buffer = new char[len + 1];
-        if (!buffer) {
-            return 0;
-        }
-        va_start(arg, format);
-        vsnprintf(buffer, len + 1, format, arg);
-        va_end(arg);
-    }
-    len = write((const uint8_t*) buffer, len);
-    if (buffer != temp) {
-        delete[] buffer;
-    }
-    if (ttyMode) display();
-    return len;
-}
+/**
+* Write a sting at current X,Y coordinates.
+* X coordinate will be moved by (size*OLED_FONT_WIDTH) pixels.
+* If ttyMode is true display() will be called to redraw screen.
+* This function overrides write(...) in Print.cpp of Arduino core
+* @param buffer The string to be printed
+* @param size The length of the string
+* @return Nr of characters written.
 */
-
-size_t OLED::printf(uint_fast8_t x, uint_fast8_t y, const char *format, ...) {
-    va_list arg;
-    va_start(arg, format);
-    char temp[64];
-    char* buffer = temp;
-    size_t len = vsnprintf(temp, sizeof(temp), format, arg);
-    va_end(arg);
-    if (len > sizeof(temp) - 1) {
-        buffer = new char[len + 1];
-        if (!buffer) {
-            return 0;
-        }
-        va_start(arg, format);
-        vsnprintf(buffer, len + 1, format, arg);
-        va_end(arg);
-    }
-    X=x;
-    Y=y;
-    len = write((const uint8_t*) buffer, len);
-    if (buffer != temp) {
-        delete[] buffer;
-    }
-
-    return len;
-}
-
 size_t OLED::write(const uint8_t *buffer, size_t len)
 {
     //size_t n = 0;
@@ -983,7 +759,281 @@ size_t OLED::write(const uint8_t *buffer, size_t len)
     return len;
 }
 
+/**
+* Set cursor position
+*
+* @param x	->	new x coordinate
+* @param y	->	new y coordinate
+*/
+void OLED::setCursor(uint_fast8_t x, uint_fast8_t y)
+{
+	if (ttyMode) return; // in TTY mode position the cursor has no effect
+	X=x;
+	Y=y;
+}
+
+/**
+* printf func width x and y coordinate set
+*
+* @param x Pixel position of the upper left corner
+* @param y Pixel position of the upper left corner
+* @param format Format string same in printf
+* @param ... Args for formatted string
+*
+* @return Len of written string
+*/
+size_t OLED::printf(uint_fast8_t x, uint_fast8_t y, const char *format, ...) {
+    va_list arg;
+    va_start(arg, format);
+    char temp[64];
+    char* buffer = temp;
+    size_t len = vsnprintf(temp, sizeof(temp), format, arg);
+    va_end(arg);
+    if (len > sizeof(temp) - 1) {
+        buffer = new char[len + 1];
+        if (!buffer) {
+            return 0;
+        }
+        va_start(arg, format);
+        vsnprintf(buffer, len + 1, format, arg);
+        va_end(arg);
+    }
+    X=x;
+    Y=y;
+    len = write((const uint8_t*) buffer, len);
+    if (buffer != temp) {
+        delete[] buffer;
+    }
+
+    return len;
+}
+
+/**
+* Set terminal mode on/off
+* @param Enabled If true, driver automatically scroll-up to one text line (height of font) when
+* a printing function (that doesn't use coordinate) reach the bottom of the screen.
+* Es.
+* When the cursor Y position is at the last text line and you use println() or writeln(),
+* the text on the the screen scrolls up and first line of text disappears
+*/
 void OLED::setTTYMode(bool Enabled)
 {
 	ttyMode=Enabled;
+}
+
+/**
+* Change current font size
+* @param size	->	available fon sizes: FONT_SIZE_NORMAL, FONT_SIZE_DOUBLE
+*/
+void OLED::setFontSize(tSize size)
+{
+	fontSize=size;
+}
+
+/**
+* Change current font and drawing color
+* @param size	->	available fon sizes: PIXEL_COLOR_BLACK, PIXEL_COLOR_WHITE
+*/
+void OLED::setPixelColor(tColor Color)
+{
+	pixelColor=Color;
+}
+
+/**
+* Draw a byte into the buffer at specifics coordinates
+* @param x	->	x coordinate
+* @param y	->	y coordinate
+* @param b	->	byte to write
+*/
+void OLED::draw_byte(uint_fast8_t x, uint_fast8_t y, uint8_t b)
+{
+    // Invalid position
+    if (x >= width || y >= height)
+    {
+        return;
+    }
+
+    uint_fast16_t buffer_index = y / 8 * width + x;
+
+    if (pixelColor == PIXEL_COLOR_WHITE)
+    {
+        // If the y position matches a page, then it goes quicker
+        if (y % 8 == 0)
+        {
+            if (buffer_index < bufsize)
+            {
+                buffer[buffer_index] |= b;
+            }
+        }
+        else
+        {
+            uint16_t w = (uint16_t) b << (y % 8);
+            if (buffer_index < bufsize)
+            {
+                buffer[buffer_index] |= (w & 0xFF);
+            }
+            uint16_t buffer_index2 = buffer_index + width;
+            if (buffer_index2 < bufsize)
+            {
+                buffer[buffer_index2] |= (w >> 8);
+            }
+        }
+    }
+    else
+    {
+        // If the y position matches a page, then it goes quicker
+        if (y % 8 == 0)
+        {
+            if (buffer_index < bufsize)
+            {
+                buffer[buffer_index] &= ~b;
+            }
+        }
+        else
+        {
+            uint16_t w = (uint16_t) b << (y % 8);
+            if (buffer_index < bufsize)
+            {
+                buffer[buffer_index] &= ~(w & 0xFF);
+            }
+            uint16_t buffer_index2 = buffer_index + width;
+            if (buffer_index2 < bufsize)
+            {
+                buffer[buffer_index2] &= ~(w >> 8);
+            }
+        }
+    }
+    return;
+}
+
+/**
+* Draw multiple bytes into the buffer
+* @param x			->	x coordinate
+* @param y			->	y coordinate
+* @param data		->	pointer to a buffer to write
+* @param size		->	size of buffer
+* @param useProgram	->	if true use internal mem
+*/
+void OLED::draw_bytes(uint_fast8_t x, uint_fast8_t y, const uint8_t* data, uint_fast8_t size, bool useProgmem)
+{
+    for (uint_fast8_t column = 0; column < size; column++)
+    {
+        uint8_t b;
+        if (useProgmem)
+        {
+            b = pgm_read_byte(data);
+        }
+        else
+        {
+            b = *data;
+        }
+        data++;
+        if (fontSize == FONT_SIZE_DOUBLE)
+        {
+            // Stretch vertically
+            uint16_t w = 0;
+            for (uint_fast8_t bit = 0; bit < 7; bit++)
+            {
+                if (b & (1 << bit))
+                {
+                    uint_fast8_t pos = bit << 1;
+                    w |= ((1 << pos) | (1 << (pos + 1)));
+                }
+            }
+
+            // Output 2 times to strech hozizontally
+            draw_byte(x, y, w & 0xFF);
+            draw_byte(x, y + 8, (w >> 8));
+            x++;
+            draw_byte(x, y, w & 0xFF);
+            draw_byte(x, y + 8, (w >> 8));
+            x++;
+        }
+        else // NORMAL_SIZE
+        {
+            draw_byte(x++, y, b);
+        }
+    }
+}
+
+void OLED::i2c_start()
+{
+    while (!digitalRead(sda_pin) || !digitalRead(scl_pin));
+    digitalWrite(sda_pin, LOW);
+#if !defined OUTPUT_OPEN_DRAIN
+    pinMode(sda_pin, OUTPUT);
+#endif
+    OLED_I2C_DELAY;
+    digitalWrite(scl_pin, LOW);
+#if !defined OUTPUT_OPEN_DRAIN
+    pinMode(scl_pin, OUTPUT);
+#endif
+    OLED_I2C_DELAY;
+}
+
+void OLED::i2c_stop()
+{
+#if !defined OUTPUT_OPEN_DRAIN
+    pinMode(scl_pin, INPUT);
+#endif
+    digitalWrite(scl_pin, HIGH);
+    OLED_I2C_DELAY;
+#if !defined OUTPUT_OPEN_DRAIN
+    pinMode(sda_pin, INPUT);
+#endif
+    digitalWrite(sda_pin, HIGH);
+    OLED_I2C_DELAY;
+    while (!digitalRead(sda_pin) || !digitalRead(scl_pin));
+}
+
+bool OLED::i2c_send(uint8_t byte)
+{
+    for (int_fast8_t bit = 7; bit >= 0; bit--)
+    {
+        if (byte & 128)
+        {
+#if !defined OUTPUT_OPEN_DRAIN
+            pinMode(sda_pin, INPUT);
+#endif
+            digitalWrite(sda_pin, HIGH);
+        }
+        else
+        {
+            digitalWrite(sda_pin, LOW);
+#if !defined OUTPUT_OPEN_DRAIN
+            pinMode(sda_pin, OUTPUT);
+#endif
+        }
+        OLED_I2C_DELAY;
+#if !defined OUTPUT_OPEN_DRAIN
+        pinMode(scl_pin, INPUT);
+#endif
+        digitalWrite(scl_pin, HIGH);
+        OLED_I2C_DELAY;
+        while (!digitalRead(scl_pin));
+        digitalWrite(scl_pin, LOW);
+#if !defined OUTPUT_OPEN_DRAIN
+        pinMode(scl_pin, OUTPUT);
+#endif
+        OLED_I2C_DELAY;
+        byte = byte << 1;
+    }
+    // Receive ACK
+#if !defined OUTPUT_OPEN_DRAIN
+    pinMode(sda_pin, INPUT);
+#endif
+    digitalWrite(sda_pin, HIGH);
+#if !defined OUTPUT_OPEN_DRAIN
+    pinMode(scl_pin, INPUT);
+#endif
+    digitalWrite(scl_pin, HIGH);
+    OLED_I2C_DELAY;
+    while (!digitalRead(scl_pin));
+    bool ack = digitalRead(sda_pin) == 0;
+    digitalWrite(scl_pin, LOW);
+#if !defined OUTPUT_OPEN_DRAIN
+    pinMode(scl_pin, OUTPUT);
+#endif
+    OLED_I2C_DELAY;
+    return ack;
 }
