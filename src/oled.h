@@ -98,6 +98,11 @@ public:
      * Initialize the display controller, clean memory and switch output on.
      */
     void begin();
+
+    /**
+     * Will use offset for wired cases when controller uses SSH1106 132x64 but display is 128x64
+     */
+    void useOffset(bool offset=true);
     
     /**
      * Enable or disable the charge pump and display output. May be used to save power.
@@ -336,6 +341,9 @@ private:
     
     /** true=SH1106 controller, false=SSD1306 controller  */
     const bool isSH1106;
+
+    /** Offset for SH1106 132x64 controller with 128x64 matrix */
+    bool usingOffset;
     
     /** Number of pages in the display and buffer */
     const uint_fast8_t pages;

@@ -403,6 +403,10 @@ void OLED::display()
         i2c_start();
         i2c_send(i2c_address << 1); // address + write
         i2c_send(0x40); // data
+        if(usingOffset){
+            i2c_send(0);
+            i2c_send(0);
+        }
         for (uint_fast8_t column = 0; column < width; column++)
         {
             i2c_send(buffer[index++]);
@@ -986,4 +990,12 @@ size_t OLED::write(const uint8_t *buffer, size_t len)
 void OLED::setTTYMode(bool Enabled)
 {
 	ttyMode=Enabled;
+}
+
+
+void OLED::useOffset(bool offset)
+{
+    if(isSH1106){
+        usingOffset = offset;
+    }
 }
