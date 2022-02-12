@@ -306,9 +306,10 @@ public:
      * @return Len of written string
      */
     size_t printf(uint_fast8_t x, uint_fast8_t y, const char *format, ...);
+    size_t printf(const char *format, ...);
 
     /** Use also Print::printf(const char *format, ...) */
-    using Print::printf;
+    //using Print::printf;
 
     /**
      * Set terminal mode on/off

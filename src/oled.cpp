@@ -929,6 +929,30 @@ size_t OLED::printf(uint_fast8_t x, uint_fast8_t y, const char *format, ...) {
     return len;
 }
 
+size_t OLED::printf(const char *format, ...) {
+    va_list arg;
+    va_start(arg, format);
+    char temp[64];
+    char* buffer = temp;
+    size_t len = vsnprintf(temp, sizeof(temp), format, arg);
+    va_end(arg);
+    if (len > sizeof(temp) - 1) {
+        buffer = new char[len + 1];
+        if (!buffer) {
+            return 0;
+        }
+        va_start(arg, format);
+        vsnprintf(buffer, len + 1, format, arg);
+        va_end(arg);
+    }
+    len = write((const uint8_t*) buffer, len);
+    if (buffer != temp) {
+        delete[] buffer;
+    }
+
+    return len;
+}
+
 size_t OLED::write(const uint8_t *buffer, size_t len)
 {
     //size_t n = 0;
@@ -939,27 +963,27 @@ size_t OLED::write(const uint8_t *buffer, size_t len)
     	// If two or more LF are consecutive, both are processed
     	if (buffer[ix] == '\r')
 		{
-			Serial.printf("n=%d r",ix);
+//			Serial.printf("n=%d r",ix);
     		X=0;
 			Y+=(OLED_FONT_HEIGHT);
 			if (buffer[ix+1] == '\n') {
-				Serial.print(" + n");Serial.println();
+//				Serial.print(" + n");Serial.println();
 				ix++; // skip char
 			}
-			Serial.printf("n=%d",ix);
-			Serial.println();
+//			Serial.printf("n=%d",ix);
+//			Serial.println();
 		}
 		else if (buffer[ix] == '\n')
 		{
-			Serial.printf("n=%d n",ix);
+//			Serial.printf("n=%d n",ix);
 			X=0;
 			Y+=(OLED_FONT_HEIGHT);
 			if (buffer[ix+1] == '\r') {
-				Serial.print(" + r");Serial.println();
+//				Serial.print(" + r");Serial.println();
 				ix++; // skip char
 			}
-			Serial.printf("n=%d",ix);
-			Serial.println();
+//			Serial.printf("n=%d",ix);
+//			Serial.println();
 		}
 		else if (*(buffer+ix) == '\f')
 		{
