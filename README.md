@@ -10,7 +10,7 @@ Author: Fabio Durigon, 2018
 email: develop@dury.it
 ***
 
-## Futures:
+## Features:
  * Supported display sizes: 196x16, 28x32 and 128x64 pixels.
  * The I2C communication is done by software bit-banging the configurable I/O pins.
  * Supports all print() and write() calls as the internal Serial lib of Arduino core
@@ -31,6 +31,10 @@ email: develop@dury.it
  * Communication errors are not handled.
  
 ## How to use:
+
+### Add `printf()` function to `Print.h` Arduino class
+
+Follow [those instructions](http://playground.arduino.cc/Main/Printf).
 
 ### Declaration
 The class constructor declaration is:
