@@ -71,13 +71,22 @@ public:
     enum tFillmode { HOLLOW, SOLID };
     
     /** Supported text sizes. Normal=6x8 pixels, Double=12x16 pixels */
-    enum tSize { NORMAL_SIZE, DOUBLE_SIZE };
+    enum tFontScaling { NORMAL_SIZE, DOUBLE_SIZE };
     
     /** Scroll effects supported by the display controller, note that there is no plain vertical scrolling */
     enum tScrollEffect { NO_SCROLLING=0, HORIZONTAL_RIGHT=0x26, HORIZONTAL_LEFT=0x27, DIAGONAL_RIGHT=0x29, DIAGONAL_LEFT=0x2A };
+
+    /** Possible display width values **/
+    enum tWidth { W_96=96, W_128=128 };
+
+    /** Possible display height values **/
+    enum tHeight { H_16=16, H_32=32, H_64=64 };
+
+    /** Possible display controller **/
+    enum tDisplayCtrl { CTRL_SSD1306, CTRL_SH1106 };
     
     /** 
-     * Constructor of the OLED class. 
+     * Constructor of the OLED class (!! DEPRECATED !!).
      * @param sda_pin Pin number of the SDA line (can be any Arduino I/O pin)
      * @param sda_pin Pin number of the SCL line (can be any Arduino I/O pin)
      * @param reset_pin Pin number for the /RST line, or use NO_RESET_PIN if the reset signal is generated somewhere else
@@ -86,8 +95,21 @@ public:
      * @param height Height of the display in pixels: 16, 32 or 64
      * @param isSH1106 Must be true=SH1106 chip, false=SSD1306 chip
      */
-    OLED(uint8_t sda_pin, uint8_t scl_pin, uint8_t reset_pin=NO_RESET_PIN, uint8_t i2c_address=0x3C, 
-        uint_fast8_t width=128, uint_fast8_t height=32, bool isSH1106=false);
+    __attribute__((deprecated("Deprecated constructor")))
+    OLED(uint8_t sda_pin, uint8_t scl_pin, uint8_t reset_pin, uint8_t i2c_address, uint_fast8_t width, uint_fast8_t height, bool isSH1106=false);
+
+    /**
+     * @brief Construct a new OLED object
+     * 
+     * @param sda_pin Pin number of the SDA line (can be any Arduino I/O pin).
+     * @param sda_pin Pin number of the SCL line (can be any Arduino I/O pin).
+     * @param reset_pin Pin number for the /RST line, or use NO_RESET_PIN if the reset signal is generated somewhere else.
+     * @param width Width of the display in pixels: can be W_96 or W_128 (for 96 or 128 pixel width).
+     * @param height Height of the display in pixels: can be H_16, H_32 or H_64 (for 16,32 or 64 pixel height).
+     * @param dispayCtrl Display controller chip: can be CTRL_SH1106 or CTRL_SSD1306.
+     * @param i2c_address The I²C address is usually 0x3c or 0x3D.
+     */
+    OLED(uint8_t sda_pin, uint8_t scl_pin, uint8_t reset_pin=NO_RESET_PIN, tWidth width=W_128, tHeight height=H_32, tDisplayCtrl displayCtrl=CTRL_SSD1306, uint8_t i2c_address=0x3C);
     
     /**
      * Destructor. Frees the buffer memory and leaves the display in the previous state.
@@ -102,7 +124,7 @@ public:
     /**
      * Will use offset for wired cases when controller uses SSH1106 132x64 but display is 128x64
      */
-    void useOffset(bool offset=true);
+    void useOffset(bool enabled=true);
     
     /**
      * Enable or disable the charge pump and display output. May be used to save power.
@@ -117,7 +139,7 @@ public:
      * the buffer memory.
      * @param enable Whether to enable inverse output
      */
-    void set_invert(bool enable);    
+    void set_invert(bool enable);
     
     /**
      * Set the contrast (brightness) of the display.
@@ -191,7 +213,7 @@ public:
      * @param scaling Scaling factor. Can be used to double the size of the output. The normal font size is 6x8
      * @param color Color to draw with
      */
-    size_t draw_character(uint_fast8_t x, uint_fast8_t y, char c, tSize scaling=NORMAL_SIZE, tColor color=WHITE);
+    size_t draw_character(uint_fast8_t x, uint_fast8_t y, char c, tFontScaling scaling=NORMAL_SIZE, tColor color=WHITE);
     
     /**
      * Draw a C string from RAM, which is a NULL terminated array of characters.
@@ -201,8 +223,8 @@ public:
      * @param scaling Scaling factor. Can be used to double the size of the output. The normal font size is 6x8
      * @param color Color to draw with
      */
-    void draw_string(uint_fast8_t x, uint_fast8_t y, const char* s, tSize scaling=NORMAL_SIZE, tColor color=WHITE);
-    
+    void draw_string(uint_fast8_t x, uint_fast8_t y, const char* s, tFontScaling scaling=NORMAL_SIZE, tColor color=WHITE);
+
     /**
      * Draw a C string from program memory (aka FLASH), which is a NULL terminated array of characters.
      * @param x Pixel position of the upper left corner
@@ -211,7 +233,7 @@ public:
      * @param scaling Scaling factor. Can be used to double the size of the output. The normal font size is 6x8
      * @param color Color to draw with
      */
-    void draw_string_P(uint_fast8_t x, uint_fast8_t y, const char* s, tSize scaling=NORMAL_SIZE, tColor color=WHITE);      
+    void draw_string_P(uint_fast8_t x, uint_fast8_t y, const char* s, tFontScaling scaling=NORMAL_SIZE, tColor color=WHITE);      
    
     /**
      * Draw a single pixel.
@@ -319,7 +341,33 @@ public:
      * When the cursor Y position is at the last text line and you use println() or writeln(),
      * the text on the the screen scrolls up and first line of text disappears
      */
-    void setTTYMode(bool Enabled);
+    void setTTYMode(bool enabled);
+
+    // ************************ U8g2 wrappers ************************
+
+     /**
+     * @brief Draw a C, NULL terminated string from RAM, using column and row positioning.
+     * Wrapper for U8g2 library API compatibility.
+     * 
+     * @param col column position where start to write (zero based).
+     * @param row row position where start to write (zero based).
+     * @param s The string to draw. Supports US-ASCII characters and german umlauts. See source code of oled.cpp
+     * @param scaling Scaling factor. Can be used to double the size of the output. The normal font size is 6x8
+     * @param color Color to draw with
+     */
+    void drawString(uint_fast8_t col, uint_fast8_t row, const char* s, tFontScaling scaling=NORMAL_SIZE, tColor color=WHITE);
+
+    /**
+     * @brief Set inverted font write.
+     * Wrapper for U8g2 library API compatibility.
+     */
+    void inverse(void);
+
+    /**
+     * @brief Set normal (not inverted) font wite.
+     * Wrapper for U8g2 library API compatibility.
+     */
+    void noInverse(void);
         
 private:
     /** Pin for the SDA line */
@@ -340,8 +388,8 @@ private:
     /** I2C address of the display controller */
     const uint8_t i2c_address;
     
-    /** true=SH1106 controller, false=SSD1306 controller  */
-    const bool isSH1106;
+    /** Display controller type SH1106 or SD1306 */
+    tDisplayCtrl displayController;
 
     /** Offset for SH1106 132x64 controller with 128x64 matrix */
     bool usingOffset;
@@ -364,6 +412,9 @@ private:
 	/** tty mode */
 	bool ttyMode;
 
+    /** Font inversion flag */
+    bool fontInverted;
+
     /** Send an I2C start signal */
     void i2c_start();
     
@@ -377,8 +428,47 @@ private:
     void draw_byte(uint_fast8_t x, uint_fast8_t y, uint8_t b, tColor color);
     
     /** Draw multiple bytes into the buffer */
-    void draw_bytes(uint_fast8_t x, uint_fast8_t y, const uint8_t* data, uint_fast8_t size, tSize scaling, tColor color, bool useProgmem);
+    void draw_bytes(uint_fast8_t x, uint_fast8_t y, const uint8_t* data, uint_fast8_t size, tFontScaling scaling, tColor color, bool useProgmem);
+
+    /**
+     * @brief Enable/disable inverted print.
+     * 
+     * @param enabled If true font are printed in inverted background mode.
+     */
+    void set_font_inverted(bool enabled);
+
+    /**
+     * @brief Convert X coordinate to column index.
+     * 
+     * @param x Pixel coordinate of horizontal position.
+     * @return Column index (zero based).
+     */
+    uint_fast8_t ToCol(uint_fast8_t x);
+
+    /**
+     * @brief Convert Y coordinate to row index.
+     * 
+     * @param y Pixel coordinate of vertical position.
+     * @return Row index (zero based).
+     */
+    uint_fast8_t ToRow(uint_fast8_t y);
+
+    /**
+     * @brief Convert column index to X coordinate.
+     * 
+     * @param col Index of column (zero based).
+     * @return X position coordinate.
+     */
+    uint_fast8_t ToX(uint_fast8_t col);
+
+    /**
+     * @brief Convert row index to Y coordinate.
+     * 
+     * @param row Index of row (zero based).
+     * @return Y position coordinate.
+     */
+    uint_fast8_t ToY(uint_fast8_t row);
 };
 
-#endif /* OLED_H */
+#endif
 

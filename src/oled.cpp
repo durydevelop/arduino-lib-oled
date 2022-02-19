@@ -107,14 +107,13 @@ static const uint8_t oled_font6x8 [] PROGMEM = {
     0x00, 0x7E, 0x01, 0x49, 0x55, 0x73, // ß
 };
 
-OLED::OLED(uint8_t sda_pin, uint8_t scl_pin, uint8_t reset_pin, uint8_t i2c_address, uint_fast8_t width, uint_fast8_t height, bool isSH1106)
-: sda_pin(sda_pin),
+OLED::OLED(uint8_t sda_pin, uint8_t scl_pin, uint8_t reset_pin, uint8_t i2c_address, uint_fast8_t width, uint_fast8_t height, bool isSH1106) :
+sda_pin(sda_pin),
 scl_pin(scl_pin),
 reset_pin(reset_pin),
 width(width),
 height(height),
 i2c_address(i2c_address),
-isSH1106(isSH1106),
 pages((height + 7) / 8),
 bufsize(static_cast<uint_least16_t> (pages*width))
 {
@@ -122,6 +121,33 @@ bufsize(static_cast<uint_least16_t> (pages*width))
     X=0;
     Y=0;
     ttyMode=OLED_DEFAULT_TTY_MODE;
+    if (isSH1106) {
+        displayController=CTRL_SH1106;
+    }
+    else {
+        displayController=CTRL_SSD1306;
+    }
+    fontInverted=false;
+    usingOffset=false;
+}
+
+OLED::OLED(uint8_t sda_pin, uint8_t scl_pin, uint8_t reset_pin, tWidth width, tHeight height, tDisplayCtrl displayCtrl, uint8_t i2c_address) :
+sda_pin(sda_pin),
+scl_pin(scl_pin),
+reset_pin(reset_pin),
+width(width),
+height(height),
+i2c_address(i2c_address),
+displayController(displayCtrl),
+pages((height + 7) / 8),
+bufsize(static_cast<uint_least16_t> (pages*width))
+{
+    this->buffer = (uint8_t *) malloc(bufsize); // two dimensional array of n pages each of n columns.
+    X=0;
+    Y=0;
+    ttyMode=OLED_DEFAULT_TTY_MODE;
+    fontInverted=false;
+    usingOffset=false;
 }
 
 OLED::~OLED()
@@ -133,27 +159,27 @@ void OLED::i2c_start()
 {
     while (!digitalRead(sda_pin) || !digitalRead(scl_pin));
     digitalWrite(sda_pin, LOW);
-#if !defined OUTPUT_OPEN_DRAIN
-    pinMode(sda_pin, OUTPUT);
-#endif
-    OLED_I2C_DELAY;
-    digitalWrite(scl_pin, LOW);
-#if !defined OUTPUT_OPEN_DRAIN
-    pinMode(scl_pin, OUTPUT);
-#endif
+    #if !defined OUTPUT_OPEN_DRAIN
+        pinMode(sda_pin, OUTPUT);
+    #endif
+        OLED_I2C_DELAY;
+        digitalWrite(scl_pin, LOW);
+    #if !defined OUTPUT_OPEN_DRAIN
+        pinMode(scl_pin, OUTPUT);
+    #endif
     OLED_I2C_DELAY;
 }
 
 void OLED::i2c_stop()
 {
-#if !defined OUTPUT_OPEN_DRAIN
-    pinMode(scl_pin, INPUT);
-#endif
-    digitalWrite(scl_pin, HIGH);
-    OLED_I2C_DELAY;
-#if !defined OUTPUT_OPEN_DRAIN
-    pinMode(sda_pin, INPUT);
-#endif
+    #if !defined OUTPUT_OPEN_DRAIN
+        pinMode(scl_pin, INPUT);
+    #endif
+        digitalWrite(scl_pin, HIGH);
+        OLED_I2C_DELAY;
+    #if !defined OUTPUT_OPEN_DRAIN
+        pinMode(sda_pin, INPUT);
+    #endif
     digitalWrite(sda_pin, HIGH);
     OLED_I2C_DELAY;
     while (!digitalRead(sda_pin) || !digitalRead(scl_pin));
@@ -165,63 +191,63 @@ bool OLED::i2c_send(uint8_t byte)
     {
         if (byte & 128)
         {
-#if !defined OUTPUT_OPEN_DRAIN
-            pinMode(sda_pin, INPUT);
-#endif
-            digitalWrite(sda_pin, HIGH);
-        }
-        else
-        {
-            digitalWrite(sda_pin, LOW);
-#if !defined OUTPUT_OPEN_DRAIN
-            pinMode(sda_pin, OUTPUT);
-#endif
+        #if !defined OUTPUT_OPEN_DRAIN
+                    pinMode(sda_pin, INPUT);
+        #endif
+                    digitalWrite(sda_pin, HIGH);
+                }
+                else
+                {
+                    digitalWrite(sda_pin, LOW);
+        #if !defined OUTPUT_OPEN_DRAIN
+                    pinMode(sda_pin, OUTPUT);
+        #endif
         }
         OLED_I2C_DELAY;
-#if !defined OUTPUT_OPEN_DRAIN
-        pinMode(scl_pin, INPUT);
-#endif
-        digitalWrite(scl_pin, HIGH);        
-        OLED_I2C_DELAY;
-        while (!digitalRead(scl_pin)); 
-        digitalWrite(scl_pin, LOW);
-#if !defined OUTPUT_OPEN_DRAIN
-        pinMode(scl_pin, OUTPUT);
-#endif
+        #if !defined OUTPUT_OPEN_DRAIN
+                pinMode(scl_pin, INPUT);
+        #endif
+                digitalWrite(scl_pin, HIGH);        
+                OLED_I2C_DELAY;
+                while (!digitalRead(scl_pin)); 
+                digitalWrite(scl_pin, LOW);
+        #if !defined OUTPUT_OPEN_DRAIN
+                pinMode(scl_pin, OUTPUT);
+        #endif
         OLED_I2C_DELAY;
         byte = byte << 1;
     }
     // Receive ACK
-#if !defined OUTPUT_OPEN_DRAIN
-    pinMode(sda_pin, INPUT);
-#endif
-    digitalWrite(sda_pin, HIGH);
-#if !defined OUTPUT_OPEN_DRAIN
-    pinMode(scl_pin, INPUT);
-#endif
+    #if !defined OUTPUT_OPEN_DRAIN
+        pinMode(sda_pin, INPUT);
+    #endif
+        digitalWrite(sda_pin, HIGH);
+    #if !defined OUTPUT_OPEN_DRAIN
+        pinMode(scl_pin, INPUT);
+    #endif
     digitalWrite(scl_pin, HIGH);    
     OLED_I2C_DELAY;
     while (!digitalRead(scl_pin)); 
     bool ack = digitalRead(sda_pin) == 0;    
     digitalWrite(scl_pin, LOW);
-#if !defined OUTPUT_OPEN_DRAIN
-    pinMode(scl_pin, OUTPUT);
-#endif
+    #if !defined OUTPUT_OPEN_DRAIN
+        pinMode(scl_pin, OUTPUT);
+    #endif
     OLED_I2C_DELAY;
     return ack;
 }
 
 void OLED::begin()
 {
-#if defined OUTPUT_OPEN_DRAIN
-    pinMode(sda_pin, OUTPUT_OPEN_DRAIN);
-    digitalWrite(sda_pin, HIGH);
-    pinMode(scl_pin, OUTPUT_OPEN_DRAIN);
-    digitalWrite(scl_pin, HIGH);
-#else
-    pinMode(sda_pin, INPUT);
-    pinMode(scl_pin, INPUT);
-#endif
+    #if defined OUTPUT_OPEN_DRAIN
+        pinMode(sda_pin, OUTPUT_OPEN_DRAIN);
+        digitalWrite(sda_pin, HIGH);
+        pinMode(scl_pin, OUTPUT_OPEN_DRAIN);
+        digitalWrite(scl_pin, HIGH);
+    #else
+        pinMode(sda_pin, INPUT);
+        pinMode(scl_pin, INPUT);
+    #endif
     if (reset_pin != NO_RESET_PIN)
     {
         pinMode(reset_pin, OUTPUT);
@@ -384,7 +410,7 @@ void OLED::display()
         i2c_start();
         i2c_send(i2c_address << 1); // address + write
         i2c_send(0x00); // command
-        if (isSH1106)
+        if (displayController == CTRL_SH1106)
         {
             i2c_send(0xB0 + page); // set page
             i2c_send(0x00); // lower columns address =0
@@ -425,6 +451,10 @@ void OLED::draw_byte(uint_fast8_t x, uint_fast8_t y, uint8_t b, tColor color)
     }
 
     uint_fast16_t buffer_index = y / 8 * width + x;
+
+    if (fontInverted) {
+        b^=255;
+    }
 
     if (color == WHITE)
     {
@@ -477,7 +507,7 @@ void OLED::draw_byte(uint_fast8_t x, uint_fast8_t y, uint8_t b, tColor color)
     return;
 }
 
-void OLED::draw_bytes(uint_fast8_t x, uint_fast8_t y, const uint8_t* data, uint_fast8_t size, tSize scaling, tColor color, bool useProgmem)
+void OLED::draw_bytes(uint_fast8_t x, uint_fast8_t y, const uint8_t* data, uint_fast8_t size, tFontScaling scaling, tColor color, bool useProgmem)
 {
     for (uint_fast8_t column = 0; column < size; column++)
     {
@@ -519,7 +549,7 @@ void OLED::draw_bytes(uint_fast8_t x, uint_fast8_t y, const uint8_t* data, uint_
     }
 }
 
-size_t OLED::draw_character(uint_fast8_t x, uint_fast8_t y, char c, tSize scaling, tColor color)
+size_t OLED::draw_character(uint_fast8_t x, uint_fast8_t y, char c, tFontScaling scaling, tColor color)
 {
     // Invalid position
     if (x >= width || y >= height || c < 32)
@@ -568,7 +598,7 @@ size_t OLED::draw_character(uint_fast8_t x, uint_fast8_t y, char c, tSize scalin
     return 1;
 }
 
-void OLED::draw_string(uint_fast8_t x, uint_fast8_t y, const char* s, tSize scaling, tColor color)
+void OLED::draw_string(uint_fast8_t x, uint_fast8_t y, const char* s, tFontScaling scaling, tColor color)
 {
     while (*s)
     {
@@ -585,7 +615,7 @@ void OLED::draw_string(uint_fast8_t x, uint_fast8_t y, const char* s, tSize scal
     }
 }
 
-void OLED::draw_string_P(uint_fast8_t x, uint_fast8_t y, const char* s, tSize scaling, tColor color)
+void OLED::draw_string_P(uint_fast8_t x, uint_fast8_t y, const char* s, tFontScaling scaling, tColor color)
 {
     char c;
     while ((c = pgm_read_byte(s)))
@@ -843,30 +873,8 @@ void OLED::scroll_up(uint_fast8_t num_lines, uint_fast8_t delay_ms)
 size_t OLED::write(uint8_t c)
 {
 	int n=1;
-
-	/*
-	if (c == '\r' || c == '\n')
-	{
-		// Process CR and LF
-		Serial.println(c);
-		X=0;
-		Y+=(OLED_FONT_HEIGHT);
-		if (ttyMode) {
-			// Scroll up if cursor position is out of screen
-			if (Y >= height) {
-				scroll_up(OLED_FONT_HEIGHT);
-				Y=height-OLED_FONT_HEIGHT;
-			}
-		}
-	}
-	else
-	{
-	*/
-		n=draw_character(X,Y,c);
-		X+=OLED_FONT_WIDTH;
-		/*
-	}
-*/
+	n=draw_character(X,Y,c);
+	X+=OLED_FONT_WIDTH;
 	return n;
 }
 
@@ -876,32 +884,6 @@ void OLED::setCursor(uint_fast8_t x, uint_fast8_t y)
 	X=x;
 	Y=y;
 }
-
-/*
-size_t OLED::printf(const char *format, ...) {
-    va_list arg;
-    va_start(arg, format);
-    char temp[64];
-    char* buffer = temp;
-    size_t len = vsnprintf(temp, sizeof(temp), format, arg);
-    va_end(arg);
-    if (len > sizeof(temp) - 1) {
-        buffer = new char[len + 1];
-        if (!buffer) {
-            return 0;
-        }
-        va_start(arg, format);
-        vsnprintf(buffer, len + 1, format, arg);
-        va_end(arg);
-    }
-    len = write((const uint8_t*) buffer, len);
-    if (buffer != temp) {
-        delete[] buffer;
-    }
-    if (ttyMode) display();
-    return len;
-}
-*/
 
 size_t OLED::printf(uint_fast8_t x, uint_fast8_t y, const char *format, ...) {
     va_list arg;
@@ -963,27 +945,19 @@ size_t OLED::write(const uint8_t *buffer, size_t len)
     	// If two or more LF are consecutive, both are processed
     	if (buffer[ix] == '\r')
 		{
-//			Serial.printf("n=%d r",ix);
     		X=0;
 			Y+=(OLED_FONT_HEIGHT);
 			if (buffer[ix+1] == '\n') {
-//				Serial.print(" + n");Serial.println();
 				ix++; // skip char
 			}
-//			Serial.printf("n=%d",ix);
-//			Serial.println();
 		}
 		else if (buffer[ix] == '\n')
 		{
-//			Serial.printf("n=%d n",ix);
 			X=0;
 			Y+=(OLED_FONT_HEIGHT);
 			if (buffer[ix+1] == '\r') {
-//				Serial.print(" + r");Serial.println();
 				ix++; // skip char
 			}
-//			Serial.printf("n=%d",ix);
-//			Serial.println();
 		}
 		else if (*(buffer+ix) == '\f')
 		{
@@ -1011,15 +985,57 @@ size_t OLED::write(const uint8_t *buffer, size_t len)
     return len;
 }
 
-void OLED::setTTYMode(bool Enabled)
+void OLED::setTTYMode(bool enabled)
 {
-	ttyMode=Enabled;
+	ttyMode=enabled;
 }
 
-
-void OLED::useOffset(bool offset)
+void OLED::useOffset(bool enabled)
 {
-    if(isSH1106){
-        usingOffset = offset;
+    if(displayController == CTRL_SH1106){
+        usingOffset=enabled;
     }
+}
+
+// ************************ U8g2 wrappers ************************
+void OLED::drawString(uint_fast8_t col, uint_fast8_t row, const char* s, tFontScaling scaling, tColor color)
+{
+    draw_string(ToX(col),ToY(row),s,scaling,color);
+}
+
+void OLED::inverse(void)
+{
+    set_font_inverted(true);
+}
+
+void OLED::noInverse(void)
+{
+    set_font_inverted(false);
+}
+
+// ************************ Tools func ************************
+
+void OLED::set_font_inverted(bool enabled)
+{
+    fontInverted=enabled;
+}
+
+uint_fast8_t OLED::ToCol(uint_fast8_t x)
+{
+    return(x/OLED_FONT_WIDTH);
+}
+
+uint_fast8_t OLED::ToRow(uint_fast8_t y)
+{
+    return(y/OLED_FONT_HEIGHT);
+}
+
+uint_fast8_t OLED::ToX(uint_fast8_t col)
+{
+    return(col*OLED_FONT_WIDTH);
+}
+
+uint_fast8_t OLED::ToY(uint_fast8_t row)
+{
+    return(row*OLED_FONT_HEIGHT);
 }
