@@ -123,3 +123,4 @@ display.noInverse();
 display.drawString(0,1,"Normal Hello World"); // second line
 ```
 The only difference is that this lib use only one 6x8 font, so, total columns are 21 insead of 16 of U8g2 8x8 font.
+See 
