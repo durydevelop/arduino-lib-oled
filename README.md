@@ -99,8 +99,15 @@ display.printf("Hello World");
 // Method 5: ROW and COLUMN position (U8g2 library API wrapper)
 display.drawString(1,1,"Hello World");
 ```
+&nbsp;
+### 4) Show on display
+Previous function calls only put data in display memory. When You want di show it up, You need to call:
+```C++
+display.display();
+```
+This call tell to display driver to refresh the view with memory content.
+&nbsp;
 ### U8g2 wrappers:
-
 Setup U8g2:
 ```C++
 #include <U8x8lib.h>
