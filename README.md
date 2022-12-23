@@ -99,8 +99,15 @@ display.printf("Hello World");
 // Method 5: ROW and COLUMN position (U8g2 library API wrapper)
 display.drawString(1,1,"Hello World");
 ```
+&nbsp;
+### 4) Show on display
+Previous function calls only put data in display memory. When You want di show it up, You need to call:
+```C++
+display.display();
+```
+This call tell to display driver to refresh the view with memory content.
+&nbsp;
 ### U8g2 wrappers:
-
 Setup U8g2:
 ```C++
 #include <U8x8lib.h>
@@ -123,4 +130,3 @@ display.noInverse();
 display.drawString(0,1,"Normal Hello World"); // second line
 ```
 The only difference is that this lib use only one 6x8 font, so, total columns are 21 insead of 16 of U8g2 8x8 font.
-See 
